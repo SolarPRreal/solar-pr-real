@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { SPAIN_PROVINCES, type StationOption } from "@/app/lib/provinces";
@@ -178,8 +178,8 @@ function PasswordField({
           type="button"
           className="password-icon-btn"
           onClick={onToggle}
-          aria-label={visible ? "Ocultar contraseña" : "Mostrar contraseña"}
-          title={visible ? "Ocultar contraseña" : "Mostrar contraseña"}
+          aria-label={visible ? "Ocultar contraseÃ±a" : "Mostrar contraseÃ±a"}
+          title={visible ? "Ocultar contraseÃ±a" : "Mostrar contraseÃ±a"}
         >
           {visible ? <EyeClosedIcon /> : <EyeOpenIcon />}
         </button>
@@ -283,21 +283,21 @@ function WashAutoPanelAd() {
       </div>
 
       <div className="wash-ad-brand">WASH AUTO PANEL</div>
-      <div className="ad-title">Limpieza integral de módulos fotovoltaicos</div>
+      <div className="ad-title">Limpieza integral de mÃ³dulos fotovoltaicos</div>
 
       <div className="wash-ad-benefits">
-        <span>Ecológico</span>
+        <span>EcolÃ³gico</span>
         <span>Mayor rendimiento</span>
         <span>Limpieza flexible</span>
       </div>
 
       <div className="wash-ad-contact">
         <strong>Contacto</strong>
-        <span>653 903 026 · 628 330 622</span>
+        <span>653 903 026 Â· 628 330 622</span>
         <span>comercial@washautopanel.com</span>
       </div>
 
-      <div className="wash-ad-cta">Visitar web →</div>
+      <div className="wash-ad-cta">Visitar web â†’</div>
     </a>
   );
 }
@@ -739,8 +739,8 @@ function AccessScreen({
           <div className="hero-kicker">Plataforma gratuita PR fotovoltaico</div>
           <h1 className="hero-title">SolarPR Monitor</h1>
           <div className="hero-text">
-            Consulta el PR de tu instalación, compara tu rendimiento con la referencia
-            de tu provincia y detecta posibles pérdidas de producción en segundos.
+            Consulta el PR de tu instalaciÃ³n, compara tu rendimiento con la referencia
+            de tu provincia y detecta posibles pÃ©rdidas de producciÃ³n en segundos.
           </div>
         </div>
 
@@ -754,7 +754,7 @@ function AccessScreen({
                 setForgotPassword(false);
               }}
             >
-              Iniciar sesión
+              Iniciar sesiÃ³n
             </button>
 
             <button
@@ -773,11 +773,11 @@ function AccessScreen({
             <>
               <h2 className="section-title">Acceso</h2>
               <div className="section-text">
-                Introduce tus datos o solicita una nueva contraseña si no la recuerdas.
+                Introduce tus datos o solicita una nueva contraseÃ±a si no la recuerdas.
               </div>
 
               <Field
-                label="Correo electrónico"
+                label="Correo electrÃ³nico"
                 value={loginEmail}
                 onChange={setLoginEmail}
                 type="email"
@@ -785,7 +785,7 @@ function AccessScreen({
               />
 
               <PasswordField
-                label="Contraseña"
+                label="ContraseÃ±a"
                 value={loginPassword}
                 onChange={setLoginPassword}
                 visible={loginPasswordVisible}
@@ -802,7 +802,7 @@ function AccessScreen({
                   style={{ marginTop: 3 }}
                 />
                 <label htmlFor="forgot-password" style={{ fontSize: 14, color: "#334155" }}>
-                  Solicitar nueva contraseña si no recuerdo la actual.
+                  Solicitar nueva contraseÃ±a si no recuerdo la actual.
                 </label>
               </div>
 
@@ -811,7 +811,7 @@ function AccessScreen({
                 className="primary-btn"
                 onClick={forgotPassword ? onRequestPassword : onLogin}
               >
-                {forgotPassword ? "Solicitar nueva contraseña" : "Entrar"}
+                {forgotPassword ? "Solicitar nueva contraseÃ±a" : "Entrar"}
               </button>
             </>
           ) : (
@@ -828,7 +828,7 @@ function AccessScreen({
               />
 
               <Field
-                label="Correo electrónico"
+                label="Correo electrÃ³nico"
                 value={signup.email}
                 onChange={(v) => setSignup((prev) => ({ ...prev, email: v }))}
                 type="email"
@@ -836,7 +836,7 @@ function AccessScreen({
               />
 
               <SelectField
-                label="Tipo de instalación"
+                label="Tipo de instalaciÃ³n"
                 value={signup.installationType}
                 onChange={(v) =>
                   setSignup((prev) => ({
@@ -858,7 +858,7 @@ function AccessScreen({
               />
 
               <PasswordField
-                label="Contraseña"
+                label="ContraseÃ±a"
                 value={signup.password}
                 onChange={(v) => setSignup((prev) => ({ ...prev, password: v }))}
                 visible={signupPasswordVisible}
@@ -866,7 +866,7 @@ function AccessScreen({
               />
 
               <Field
-                label="Teléfono (opcional)"
+                label="TelÃ©fono (opcional)"
                 value={signup.phone ?? ""}
                 onChange={(v) => setSignup((prev) => ({ ...prev, phone: v }))}
               />
@@ -897,7 +897,7 @@ function AccessScreen({
         <div className="auth-ad">
           <AdSlot
             title="Espacio publicitario superior"
-            description="Banner reservado para patrocinadores, empresas de mantenimiento, seguros solares o software energético."
+            description="Banner reservado para patrocinadores, empresas de mantenimiento, seguros solares o software energÃ©tico."
             size="970x90"
           />
         </div>
@@ -966,12 +966,12 @@ function DashboardScreen({
 
           <div className="dashboard-top">
             <div className="hero-text" style={{ maxWidth: 820 }}>
-              Sesión iniciada como <strong>{currentUser?.fullName}</strong>. Provincia principal:{" "}
+              SesiÃ³n iniciada como <strong>{currentUser?.fullName}</strong>. Provincia principal:{" "}
               <strong>{currentUser?.province}</strong>.
             </div>
 
             <button type="button" className="logout-btn" onClick={onLogout}>
-              Cerrar sesión
+              Cerrar sesiÃ³n
             </button>
           </div>
         </div>
@@ -979,7 +979,7 @@ function DashboardScreen({
         <div className="ad-row">
           <AdSlot
             title="Banner principal de patrocinador"
-            description="Espacio reservado para campañas, patrocinadores o anunciantes del sector fotovoltaico."
+            description="Espacio reservado para campaÃ±as, patrocinadores o anunciantes del sector fotovoltaico."
             size="970x90"
           />
         </div>
@@ -987,15 +987,15 @@ function DashboardScreen({
         <div className="dashboard-grid">
           <div className="card">
             <h2 className="section-title" style={{ fontSize: 26 }}>
-              Configuración de consulta
+              ConfiguraciÃ³n de consulta
             </h2>
 
             <div className="section-text">
-              Elige provincia, estación y estructura para preparar la consulta del PR.
+              Elige provincia, estaciÃ³n y estructura para preparar la consulta del PR.
             </div>
 
             <Field
-              label="Nombre de la instalación"
+              label="Nombre de la instalaciÃ³n"
               value={plantForm.plantName}
               onChange={(v) => setPlantForm((prev) => ({ ...prev, plantName: v }))}
             />
@@ -1011,7 +1011,7 @@ function DashboardScreen({
             />
 
             <SelectField
-              label="Estación meteorológica"
+              label="EstaciÃ³n meteorolÃ³gica"
               value={selectedStation?.id || plantForm.stationId}
               onChange={(v) => setPlantForm((prev) => ({ ...prev, stationId: v }))}
               disabled={stationsLoading || stations.length === 0}
@@ -1050,19 +1050,19 @@ function DashboardScreen({
 
             <div className="station-box">
               <div style={{ fontWeight: 700, marginBottom: 6 }}>
-                Referencia meteorológica seleccionada
+                Referencia meteorolÃ³gica seleccionada
               </div>
 
               {selectedStation ? (
                 <div style={{ color: "#475569", fontSize: 14 }}>
-                  {plantForm.province} · {selectedStation.name} · PR medio provincial de referencia{" "}
+                  {plantForm.province} Â· {selectedStation.name} Â· PR medio provincial de referencia{" "}
                   {selectedStation.zoneAvgPR}%
                 </div>
               ) : (
                 <div style={{ color: "#475569", fontSize: 14 }}>
                   {stationsLoading
                     ? "Cargando estaciones para la provincia seleccionada."
-                    : "Aún no hay estaciones cargadas para la provincia seleccionada."}
+                    : "AÃºn no hay estaciones cargadas para la provincia seleccionada."}
                 </div>
               )}
             </div>
@@ -1089,7 +1089,7 @@ function DashboardScreen({
               <div>
                 {dataSource.mode === "api"
                   ? "Consulta conectada a la API protegida de SIAR/MAPA."
-                  : "Modo preproducción: estaciones de respaldo mientras se habilita el token API SIAR."}
+                  : "Modo preproducciÃ³n: estaciones de respaldo mientras se habilita el token API SIAR."}
               </div>
             </div>
 
@@ -1111,31 +1111,31 @@ function DashboardScreen({
 
           <div className="main-results">
             <div className="stat-grid">
-              <StatCard title="PR del día" value={`${pr}%`} subtitle={`Estado: ${stateLabel}`} />
-              <StatCard title="PR medio 7 días" value={`${avg7}%`} subtitle="Seguimiento semanal" />
-              <StatCard title="PR medio mensual" value={`${monthlyAvg}%`} subtitle="Visión de tendencia" />
+              <StatCard title="PR del dÃ­a" value={`${pr}%`} subtitle={`Estado: ${stateLabel}`} />
+              <StatCard title="PR medio 7 dÃ­as" value={`${avg7}%`} subtitle="Seguimiento semanal" />
+              <StatCard title="PR medio mensual" value={`${monthlyAvg}%`} subtitle="VisiÃ³n de tendencia" />
               <StatCard
-                title="Pérdida estimada"
-                value={estimatedLoss > 0 ? `${estimatedLoss} €/mes` : "0 €/mes"}
-                subtitle="Estimación de impacto económico"
+                title="PÃ©rdida estimada"
+                value={estimatedLoss > 0 ? `${estimatedLoss} â‚¬/mes` : "0 â‚¬/mes"}
+                subtitle="EstimaciÃ³n de impacto econÃ³mico"
               />
             </div>
 
             <div className="stat-grid">
               <StatCard title="Benchmark provincia" value={`${zoneAvgPR}%`} subtitle={benchmarkText} />
               <StatCard title="Percentil mercado" value="93" subtitle="Comparativa con instalaciones similares" />
-              <StatCard title="Inversores críticos" value={`${criticalInverters}`} subtitle="Equipos por debajo del umbral" />
+              <StatCard title="Inversores crÃ­ticos" value={`${criticalInverters}`} subtitle="Equipos por debajo del umbral" />
               <StatCard title="Calidad del dato" value="98%" subtitle="Serie casi completa" />
             </div>
 
             <div className="two-col">
               <div className="card">
                 <h2 className="section-title" style={{ fontSize: 26 }}>
-                  Producción real vs esperada
+                  ProducciÃ³n real vs esperada
                 </h2>
 
                 <div className="section-text">
-                  Resumen horario de ejemplo para la instalación.
+                  Resumen horario de ejemplo para la instalaciÃ³n.
                 </div>
 
                 {mockHourly.map((item) => {
@@ -1155,7 +1155,7 @@ function DashboardScreen({
                       >
                         <span style={{ fontWeight: 600 }}>{item.time}</span>
                         <span style={{ color: "#64748b" }}>
-                          PR {item.pr}% · pérdida {loss > 0 ? loss : 0} kWh
+                          PR {item.pr}% Â· pÃ©rdida {loss > 0 ? loss : 0} kWh
                         </span>
                       </div>
 
@@ -1175,11 +1175,11 @@ function DashboardScreen({
 
               <div className="card">
                 <h2 className="section-title" style={{ fontSize: 26 }}>
-                  Diagnóstico automático
+                  DiagnÃ³stico automÃ¡tico
                 </h2>
 
                 <div className="section-text">
-                  Lectura rápida del estado del activo.
+                  Lectura rÃ¡pida del estado del activo.
                 </div>
 
                 <div
@@ -1192,7 +1192,7 @@ function DashboardScreen({
                   }}
                 >
                   <div style={{ fontWeight: 700, color: "#92400e", marginBottom: 6 }}>
-                    Diagnóstico principal
+                    DiagnÃ³stico principal
                   </div>
                   <div style={{ fontSize: 14, color: "#92400e" }}>{diagnosis}</div>
                 </div>
@@ -1207,7 +1207,7 @@ function DashboardScreen({
                   }}
                 >
                   <div style={{ fontWeight: 700, color: "#1d4ed8", marginBottom: 6 }}>
-                    Comparación con la provincia
+                    ComparaciÃ³n con la provincia
                   </div>
                   <div style={{ fontSize: 14, color: "#1d4ed8" }}>{benchmarkText}</div>
                 </div>
@@ -1229,7 +1229,7 @@ function DashboardScreen({
                       marginBottom: 10,
                     }}
                   >
-                    <span style={{ color: "#475569" }}>Índice de confianza del cálculo</span>
+                    <span style={{ color: "#475569" }}>Ãndice de confianza del cÃ¡lculo</span>
                     <span style={{ fontWeight: 700 }}>82%</span>
                   </div>
 
@@ -1263,7 +1263,7 @@ function DashboardScreen({
                   >
                     <div style={{ fontWeight: 700, marginBottom: 6 }}>Servicio recomendado</div>
                     <div style={{ fontSize: 14, lineHeight: 1.5 }}>
-                      Tu instalación podría beneficiarse de una revisión técnica o servicio
+                      Tu instalaciÃ³n podrÃ­a beneficiarse de una revisiÃ³n tÃ©cnica o servicio
                       de mantenimiento.
                     </div>
                     <button
@@ -1279,7 +1279,7 @@ function DashboardScreen({
                         cursor: "pointer",
                       }}
                     >
-                      Solicitar diagnóstico gratuito
+                      Solicitar diagnÃ³stico gratuito
                     </button>
                   </div>
                 ) : null}
@@ -1329,11 +1329,11 @@ function DashboardScreen({
 
               <div className="card">
                 <h2 className="section-title" style={{ fontSize: 26 }}>
-                  Alertas y anomalías
+                  Alertas y anomalÃ­as
                 </h2>
 
                 <div className="section-text">
-                  Detección de pérdidas en franjas concretas del día.
+                  DetecciÃ³n de pÃ©rdidas en franjas concretas del dÃ­a.
                 </div>
 
                 {mockHourly
@@ -1341,10 +1341,10 @@ function DashboardScreen({
                   .map((item) => (
                     <div key={item.time} className="alert-card">
                       <div style={{ fontWeight: 700, color: "#991b1b" }}>
-                        {item.time} · PR {item.pr}%
+                        {item.time} Â· PR {item.pr}%
                       </div>
                       <div style={{ fontSize: 14, color: "#7f1d1d", marginTop: 4 }}>
-                        Posible desviación respecto al comportamiento esperado.
+                        Posible desviaciÃ³n respecto al comportamiento esperado.
                       </div>
                     </div>
                   ))}
@@ -1353,7 +1353,7 @@ function DashboardScreen({
 
             <div className="card">
               <h2 className="section-title" style={{ fontSize: 26 }}>
-                Evolución diaria del PR
+                EvoluciÃ³n diaria del PR
               </h2>
 
               <div className="section-text">
@@ -1398,7 +1398,7 @@ function DashboardScreen({
         <div className="ad-row" style={{ marginTop: 24 }}>
           <AdSlot
             title="Patrocinador del mes"
-            description="Espacio inferior para campañas, colaboraciones comerciales o patrocinadores del proyecto."
+            description="Espacio inferior para campaÃ±as, colaboraciones comerciales o patrocinadores del proyecto."
             size="970x250"
           />
         </div>
@@ -1442,7 +1442,7 @@ export default function Home() {
   const [loginPassword, setLoginPassword] = useState("");
 
   const [plantForm, setPlantForm] = useState<PlantForm>({
-    plantName: "Mi instalación FV",
+    plantName: "Mi instalaciÃ³n FV",
     province: "Madrid",
     stationId: "",
     peakPower: "100",
@@ -1472,8 +1472,8 @@ export default function Home() {
 
   const benchmarkText =
     zoneGap >= 0
-      ? `Tu instalación está ${zoneGap}% por encima de la referencia media de tu zona.`
-      : `Tu instalación está ${Math.abs(zoneGap)}% por debajo de la referencia media de tu zona.`;
+      ? `Tu instalaciÃ³n estÃ¡ ${zoneGap}% por encima de la referencia media de tu zona.`
+      : `Tu instalaciÃ³n estÃ¡ ${Math.abs(zoneGap)}% por debajo de la referencia media de tu zona.`;
 
   const diagnosis = useMemo(() => {
     if (pr < 82) {
@@ -1485,13 +1485,13 @@ export default function Home() {
         (item) => ["12:00", "13:00", "14:00"].includes(item.time) && item.pr < 88
       )
     ) {
-      return "Se detecta caída en horas centrales. Posible clipping, suciedad o limitación parcial.";
+      return "Se detecta caÃ­da en horas centrales. Posible clipping, suciedad o limitaciÃ³n parcial.";
     }
 
-    return "No se detectan anomalías severas. Recomendable seguir monitorizando el activo.";
+    return "No se detectan anomalÃ­as severas. Recomendable seguir monitorizando el activo.";
   }, [pr]);
 
-  const stateLabel = pr >= 90 ? "Óptimo" : pr >= 85 ? "Vigilancia" : "Revisar";
+  const stateLabel = pr >= 90 ? "Ã“ptimo" : pr >= 85 ? "Vigilancia" : "Revisar";
   const stateColor = pr >= 90 ? "#166534" : pr >= 85 ? "#92400e" : "#991b1b";
   const stateBg = pr >= 90 ? "#dcfce7" : pr >= 85 ? "#fef3c7" : "#fee2e2";
   const canOfferService = pr < 85;
@@ -1540,7 +1540,7 @@ export default function Home() {
       setStations([]);
       setDataSource({
         mode: "unknown",
-        source: "Error de conexión",
+        source: "Error de conexiÃ³n",
         note: "No se pudo conectar con la fuente de estaciones.",
       });
     } finally {
@@ -1602,7 +1602,7 @@ export default function Home() {
     } catch {
       setNotice({
         type: "error",
-        text: "Error de conexión al registrar el usuario.",
+        text: "Error de conexiÃ³n al registrar el usuario.",
       });
     }
   };
@@ -1627,7 +1627,7 @@ export default function Home() {
       if (!response.ok || !data.ok) {
         setNotice({
           type: "error",
-          text: data.message || "No se pudo iniciar sesión.",
+          text: data.message || "No se pudo iniciar sesiÃ³n.",
         });
         return;
       }
@@ -1646,7 +1646,7 @@ export default function Home() {
     } catch {
       setNotice({
         type: "error",
-        text: "Error de conexión al iniciar sesión.",
+        text: "Error de conexiÃ³n al iniciar sesiÃ³n.",
       });
     }
   };
@@ -1655,7 +1655,7 @@ export default function Home() {
     setNotice(null);
 
     try {
-      const response = await fetch("/api/request-password", {
+      const response = await fetch("/api/request-password-reset-reset", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -1677,7 +1677,7 @@ export default function Home() {
 
       setNotice({
         type: "success",
-        text: "Solicitud registrada correctamente en el Excel de nuevas contraseñas.",
+        text: "Solicitud registrada correctamente en el Excel de nuevas contraseÃ±as.",
       });
 
       setForgotPassword(false);
@@ -1685,7 +1685,7 @@ export default function Home() {
     } catch {
       setNotice({
         type: "error",
-        text: "Error de conexión al solicitar una nueva contraseña.",
+        text: "Error de conexiÃ³n al solicitar una nueva contraseÃ±a.",
       });
     }
   };
@@ -1754,3 +1754,4 @@ export default function Home() {
     />
   );
 }
+
