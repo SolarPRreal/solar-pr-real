@@ -59,8 +59,9 @@ const DEFAULT_USER: RegisteredUser = {
   peakPower: "100",
 };
 
+const PRIVACY_VERSION = "2026-06-09";
 const RGPD_TEXT =
-  "Declaro que he leído y acepto que SolarPR Monitor trate los datos facilitados en este formulario con la finalidad de crear mi cuenta, confirmar mi registro, permitirme acceder al área privada y contactar conmigo en relación con el análisis de rendimiento de mi instalación fotovoltaica. Los datos se conservarán de forma segura, estarán siempre protegidos y serán tratados conforme al Reglamento General de Protección de Datos (RGPD) y la normativa española aplicable. Podré ejercer mis derechos de acceso, rectificación, supresión, oposición, limitación y portabilidad solicitándolo al responsable del tratamiento.";
+  "He leído la Política de Privacidad y consiento el tratamiento de mi nombre, apellidos y correo para crear y gestionar mi cuenta, confirmar el registro, prestar el servicio de cálculo de PR y atender solicitudes relacionadas. Los datos técnicos de las instalaciones se limitarán a los necesarios para el análisis. Podré retirar el consentimiento y ejercer mis derechos escribiendo a soporte.solarpr@gmail.com. La información completa sobre responsable, finalidades, base jurídica, conservación, destinatarios y derechos está disponible en la Política de Privacidad.";
 
 const sampleTimes = [
   "00:00", "00:15", "00:30", "00:45", "01:00", "01:15", "01:30", "01:45",
@@ -308,7 +309,7 @@ function formatNumber(value: number, digits = 1) {
 
 function isSecurePassword(password: string) {
   return (
-    password.length >= 8 &&
+    password.length >= 12 &&
     /[a-z]/.test(password) &&
     /[A-Z]/.test(password) &&
     /\d/.test(password) &&
@@ -1011,7 +1012,7 @@ export default function Home() {
   const [meterPort, setMeterPort] = useState("502");
   const [gatewayAddress, setGatewayAddress] = useState("");
   const [writePassword, setWritePassword] = useState("");
-  const [meterProtocol, setMeterProtocol] = useState("Modbus TCP");
+  const [meterProtocol, setMeterProtocol] = useState("TCP/IP");
   const [readingDate, setReadingDate] = useState(new Date().toISOString().slice(0, 10));
   const [lectucontMessage, setLectucontMessage] = useState<{
     type: "ok" | "error";
@@ -1153,49 +1154,11 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [registeredUser?.autonomousCommunity, user.autonomousCommunity]);
 
-  useEffect(() => {
-    const saved = window.localStorage.getItem("solarpr-lectucont-config");
-
-    if (!saved) {
-      return;
-    }
-
-    try {
-      const parsed = JSON.parse(saved) as {
-        meterIp?: string;
-        meterPort?: string;
-        gatewayAddress?: string;
-        meterId?: string;
-        writePassword?: string;
-        meterProtocol?: string;
-        readingDate?: string;
-      };
-
-      setMeterIp(parsed.meterIp || "");
-      setMeterPort(parsed.meterPort || "502");
-      setGatewayAddress(parsed.gatewayAddress || parsed.meterId || "");
-      setWritePassword(parsed.writePassword || "");
-      setMeterProtocol(parsed.meterProtocol || "Modbus TCP");
-      setReadingDate(parsed.readingDate || new Date().toISOString().slice(0, 10));
-    } catch {
-      window.localStorage.removeItem("solarpr-lectucont-config");
-    }
-  }, []);
 
   function saveLectucontConfig() {
-    const config = {
-      meterIp,
-      meterPort,
-      gatewayAddress,
-      writePassword,
-      meterProtocol,
-    };
-
-    window.localStorage.setItem("solarpr-lectucont-config", JSON.stringify(config));
-
     setLectucontMessage({
       type: "ok",
-      text: "Configuración del programa de lectura guardada para futuras lecturas.",
+      text: "Los parámetros permanecen únicamente en esta pantalla mientras esté abierta. La clave no se guarda en el navegador ni se envía a SolarPR.",
     });
   }
 
@@ -1209,16 +1172,6 @@ export default function Home() {
       });
       return;
     }
-
-    const config = {
-      meterIp,
-      meterPort,
-      gatewayAddress,
-      writePassword,
-      meterProtocol,
-    };
-
-    window.localStorage.setItem("solarpr-lectucont-config", JSON.stringify(config));
 
     try {
       const response = await fetch("/api/lectucont/open", {
@@ -1259,110 +1212,76 @@ export default function Home() {
     }
   }
 
-  function getStoredUsers(): RegisteredUser[] {
-    try {
-      return JSON.parse(window.localStorage.getItem("solarpr-registered-users") || "[]") as RegisteredUser[];
-    } catch {
-      return [];
-    }
-  }
-
-  function saveStoredUsers(users: RegisteredUser[]) {
-    window.localStorage.setItem("solarpr-registered-users", JSON.stringify(users));
-  }
 
   async function handleRegister() {
     if (!user.name || !user.surname || !user.email || !user.password || !confirmPassword) {
       alert("Rellena nombre, apellido, mail, contraseña y confirmación de contraseña para continuar.");
       return;
     }
-
     if (!isSecurePassword(user.password)) {
-      alert("La contraseña debe tener al menos 8 caracteres e incluir letras, mayúsculas, números y un carácter especial.");
+      alert("La contraseña debe tener entre 12 y 128 caracteres e incluir minúscula, mayúscula, número y carácter especial.");
       return;
     }
-
     if (user.password !== confirmPassword) {
       alert("La contraseña y la confirmación no coinciden.");
       return;
     }
-
     if (!rgpdAccepted) {
-      alert("Debes aceptar el uso protegido de tus datos y la política RGPD para registrarte.");
+      alert("Debes aceptar la Política de Privacidad para registrarte.");
       return;
     }
-
-    const users = getStoredUsers();
-    const normalizedEmail = user.email.trim().toLowerCase();
-
-    if (users.some((storedUser) => storedUser.email.trim().toLowerCase() === normalizedEmail)) {
-      alert("Ya existe un usuario registrado con ese correo. Usa la opción de acceso.");
-      setAuthMode("login");
-      setLoginEmail(user.email);
-      return;
-    }
-
-    const registered = {
-      ...user,
-      email: normalizedEmail,
-    };
-
     try {
       const response = await fetch("/api/register-user", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: registered.name,
-          surname: registered.surname,
-          email: registered.email,
-          password: registered.password,
+          name: user.name,
+          surname: user.surname,
+          email: user.email,
+          password: user.password,
           rgpdAccepted,
-          rgpdText: RGPD_TEXT,
-          source: "SolarPR Monitor - web TFM",
+          privacyVersion: PRIVACY_VERSION,
         }),
       });
-
       const data = await response.json();
-
       if (!response.ok || !data.ok) {
-        alert(data.message || "No se pudo registrar el usuario en la hoja de usuarios.");
+        alert(data.message || "No se pudo registrar el usuario.");
         return;
       }
-
-      saveStoredUsers([...users, registered]);
-      setRegisteredUser(registered);
-
-      alert(`Registro creado. Se ha enviado un correo de confirmación a ${registered.email}.`);
-      setScreen("dashboard");
+      setLoginEmail(user.email.trim().toLowerCase());
+      setLoginPassword("");
+      setConfirmPassword("");
+      setUser((prev) => ({ ...prev, password: "" }));
+      setAuthMode("login");
+      alert(data.message || "Registro recibido. Revisa tu correo para confirmar la cuenta.");
     } catch {
-      alert("No se pudo conectar con el servicio de registro. Revisa la API local.");
+      alert("No se pudo conectar con el servicio de registro.");
     }
   }
 
-  function handleLogin() {
+  async function handleLogin() {
     if (!loginEmail || !loginPassword) {
       alert("Introduce tu correo y tu contraseña.");
       return;
     }
-
-    const normalizedEmail = loginEmail.trim().toLowerCase();
-    const users = getStoredUsers();
-    const foundUser = users.find(
-      (storedUser) =>
-        storedUser.email.trim().toLowerCase() === normalizedEmail &&
-        storedUser.password === loginPassword
-    );
-
-    if (!foundUser) {
-      alert("No se ha encontrado un usuario con ese correo y contraseña.");
-      return;
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: loginEmail, password: loginPassword }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.ok) {
+        alert(data.message || "Correo o contraseña incorrectos.");
+        return;
+      }
+      setRegisteredUser(data.user as RegisteredUser);
+      setUser((prev) => ({ ...prev, ...(data.user as RegisteredUser) }));
+      setLoginPassword("");
+      setScreen("dashboard");
+    } catch {
+      alert("No se pudo conectar con el servicio de acceso.");
     }
-
-    setRegisteredUser(foundUser);
-    setUser(foundUser);
-    setScreen("dashboard");
   }
 
   async function handleRequestPasswordReset() {
@@ -1426,7 +1345,7 @@ export default function Home() {
     if (!isSecurePassword(newPassword)) {
       setPasswordRecoveryMessage({
         type: "error",
-        text: "La nueva contraseña debe tener al menos 8 caracteres e incluir letras, mayúsculas, números y un carácter especial.",
+        text: "La nueva contraseña debe tener entre 12 y 128 caracteres e incluir letras, mayúsculas, números y un carácter especial.",
       });
       return;
     }
@@ -1462,14 +1381,6 @@ export default function Home() {
         return;
       }
 
-      const users = getStoredUsers();
-      const updatedUsers = users.map((storedUser) =>
-        storedUser.email.trim().toLowerCase() === email
-          ? { ...storedUser, password: newPassword }
-          : storedUser
-      );
-
-      saveStoredUsers(updatedUsers);
       setLoginEmail(email);
       setLoginPassword("");
       setResetCode("");
@@ -1657,38 +1568,14 @@ export default function Home() {
     if (!file) return;
 
     const fileName = file.name.toLowerCase();
-    const isSpreadsheet = fileName.endsWith(".xlsx") || fileName.endsWith(".xls");
+    const isSpreadsheet = fileName.endsWith(".xlsx");
 
     try {
       let result: CsvResult;
 
       if (isSpreadsheet) {
-        const XLSX = await import("xlsx");
-        const buffer = await file.arrayBuffer();
-        const workbook = XLSX.read(buffer, {
-          type: "array",
-          cellDates: true,
-        });
-
-        const firstSheetName = workbook.SheetNames[0];
-
-        if (!firstSheetName) {
-          setCsvRows([]);
-          setCsvMessage({
-            type: "error",
-            text: "El archivo Excel no contiene hojas.",
-          });
-          event.target.value = "";
-          return;
-        }
-
-        const worksheet = workbook.Sheets[firstSheetName];
-        const tableRows = XLSX.utils.sheet_to_json<unknown[]>(worksheet, {
-          header: 1,
-          raw: true,
-          defval: "",
-        });
-
+        const { default: readXlsxFile } = await import("read-excel-file/browser");
+        const tableRows = (await readXlsxFile(file)) as unknown as unknown[][];
         result = validateFifteenMinuteTable(tableRows, "XLSX");
       } else {
         const content = await file.text();
@@ -1894,7 +1781,7 @@ export default function Home() {
                       </label>
 
                       <p className="small-note">
-                        La contraseña debe tener al menos 8 caracteres e incluir letras, mayúsculas,
+                        La contraseña debe tener entre 12 y 128 caracteres e incluir letras, mayúsculas,
                         números y un carácter especial.
                       </p>
 
@@ -2087,7 +1974,7 @@ export default function Home() {
                       </label>
 
                       <p className="small-note">
-                        La nueva contraseña debe tener al menos 8 caracteres e incluir letras,
+                        La nueva contraseña debe tener entre 12 y 128 caracteres e incluir letras,
                         mayúsculas, números y un carácter especial.
                       </p>
 
@@ -2151,8 +2038,12 @@ export default function Home() {
                 <span className="status-pill" style={{ borderColor: status.color, color: status.color }}>
                   ● {status.label}
                 </span>
-                <button type="button" className="secondary" onClick={() => setScreen("access")}>
-                  Volver
+                <button type="button" className="secondary" onClick={async () => {
+                  await fetch("/api/logout", { method: "POST" }).catch(() => null);
+                  setRegisteredUser(null);
+                  setScreen("access");
+                }}>
+                  Cerrar sesión
                 </button>
               </div>
             </div>
@@ -2191,18 +2082,16 @@ export default function Home() {
                 </div>
 
                 <div className="upload-box">
-                  <input type="file" accept=".csv,.xlsx,.xls,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" onChange={handleCsvUpload} />
+                  <input type="file" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={handleCsvUpload} />
                   {csvMessage ? (
                     <div className={`message ${csvMessage.type}`}>{csvMessage.text}</div>
                   ) : null}
                 </div>
 
                 <div className="lectucont-panel">
-                  <h3>Conexión futura con contadores mediante programa de lectura</h3>
+                  <h3>Lectura mediante programa local de contadores</h3>
                   <p>
-                    Además de la subida manual del CSV/XLSX, se habilitará la posibilidad de introducir
-                    los parámetros de comunicación del contador fotovoltaico para preparar la llamada por IP
-                    mediante un programa de lectura y obtener la lectura del periodo solicitado.
+                    Introduce los parámetros únicamente en un equipo autorizado con acceso al contador. Por seguridad, la clave no se guarda ni se envía a nuestros servidores. La web pública requiere un conector local para comunicarse con el programa de lectura; mientras tanto, exporta desde dicho programa el CSV/XLSX y súbelo arriba.
                   </p>
 
                   <div className="lectu-grid">

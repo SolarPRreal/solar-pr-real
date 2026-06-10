@@ -1,134 +1,64 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-import * as XLSX from "xlsx";
+import {
+  SESSION_COOKIE,
+  callWebhook,
+  createSessionToken,
+  getClientIp,
+  hashPassword,
+  isSameOrigin,
+  isValidEmail,
+  normalizeEmail,
+  parseJson,
+  rateLimit,
+  sessionMaxAge,
+} from "@/app/lib/security";
 
-type LoginBody = {
-  email: string;
-  password: string;
-};
+export const runtime = "nodejs";
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const USERS_FILE = path.join(DATA_DIR, "Registro usuarios.xlsx");
-const USERS_SHEET = "Usuarios";
-
-function ensureDataDir(): void {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
-
-  const stats = fs.statSync(DATA_DIR);
-  if (!stats.isDirectory()) {
-    throw new Error(`La ruta ${DATA_DIR} existe pero no es una carpeta.`);
-  }
-}
-
-function ensureUsersFileExistsAndIsValid(): void {
-  if (!fs.existsSync(USERS_FILE)) {
-    throw new Error(
-      `No existe el archivo de usuarios en ${USERS_FILE}. Registra primero un usuario.`
-    );
-  }
-
-  const stats = fs.statSync(USERS_FILE);
-
-  if (stats.isDirectory()) {
-    throw new Error(
-      `La ruta ${USERS_FILE} es una carpeta y no un archivo Excel válido.`
-    );
-  }
-}
-
-function readRows(filePath: string, sheetName: string): Record<string, string>[] {
-  if (!fs.existsSync(filePath)) {
-    return [];
-  }
-
-  const stats = fs.statSync(filePath);
-
-  if (!stats.isFile()) {
-    throw new Error(`La ruta ${filePath} no es un archivo válido.`);
-  }
-
-  const fileBuffer = fs.readFileSync(filePath);
-  const workbook = XLSX.read(fileBuffer, { type: "buffer" });
-  const sheet = workbook.Sheets[sheetName];
-
-  if (!sheet) {
-    return [];
-  }
-
-  return XLSX.utils.sheet_to_json<Record<string, string>>(sheet, {
-    defval: "",
-  });
-}
+type LoginBody = { email?: string; password?: string };
 
 export async function POST(request: Request) {
   try {
-    ensureDataDir();
-    ensureUsersFileExistsAndIsValid();
+    if (!isSameOrigin(request)) return NextResponse.json({ ok: false, message: "Solicitud no permitida." }, { status: 403 });
+    const ip = getClientIp(request);
+    const limited = rateLimit(`login:${ip}`, 8, 15 * 60_000);
+    if (!limited.allowed) return NextResponse.json({ ok: false, message: "Demasiados intentos. Inténtalo más tarde." }, { status: 429, headers: { "Retry-After": String(limited.retryAfter) } });
 
-    const body = (await request.json()) as LoginBody;
-
-    const email = body.email?.trim().toLowerCase() || "";
-    const password = body.password || "";
-
-    if (!email || !password) {
-      return NextResponse.json(
-        {
-          ok: false,
-          message: "Debes indicar email y contraseña.",
-        },
-        { status: 400 }
-      );
+    const body = await parseJson<LoginBody>(request);
+    const email = normalizeEmail(body.email);
+    const password = String(body.password ?? "");
+    if (!isValidEmail(email) || !password || password.length > 128) {
+      return NextResponse.json({ ok: false, message: "Correo o contraseña incorrectos." }, { status: 401 });
     }
 
-    const users = readRows(USERS_FILE, USERS_SHEET);
-
-    const found = users.find(
-      (user) =>
-        String(user.email || "").trim().toLowerCase() === email &&
-        String(user.password || "") === password
-    );
-
-    if (!found) {
-      return NextResponse.json(
-        {
-          ok: false,
-          message: "Correo o contraseña incorrectos.",
-        },
-        { status: 401 }
-      );
+    const { response, data } = await callWebhook({ action: "login", email, passwordHash: hashPassword(password) });
+    if (!response.ok || data.ok !== true) {
+      return NextResponse.json({ ok: false, message: "Correo o contraseña incorrectos." }, { status: 401 });
     }
 
-    return NextResponse.json({
-      ok: true,
-      message: "Login correcto.",
-      user: {
-        fullName: String(found.fullName || ""),
-        email: String(found.email || ""),
-        installationType: String(found.installationType || ""),
-        province: String(found.province || ""),
-        password: String(found.password || ""),
-        company: String(found.company || ""),
-        phone: String(found.phone || ""),
-        peakPowerKw: String(found.peakPowerKw || ""),
-      },
+    const rawUser = (data.user || {}) as Record<string, unknown>;
+    const user = {
+      name: String(rawUser.name ?? "").slice(0, 80),
+      surname: String(rawUser.surname ?? "").slice(0, 120),
+      email,
+      plantName: String(rawUser.plantName ?? "Instalación FV").slice(0, 120),
+      autonomousCommunity: String(rawUser.autonomousCommunity ?? "Comunidad de Madrid").slice(0, 80),
+      province: String(rawUser.province ?? "Madrid").slice(0, 80),
+      siarStationId: String(rawUser.siarStationId ?? "").slice(0, 30),
+      peakPower: String(rawUser.peakPower ?? "100").slice(0, 20),
+    };
+
+    const result = NextResponse.json({ ok: true, user });
+    result.cookies.set(SESSION_COOKIE, createSessionToken({ email, name: user.name, surname: user.surname }), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: sessionMaxAge,
     });
+    return result;
   } catch (error) {
-    console.error("Error en login:", error);
-
-    const message =
-      error instanceof Error
-        ? error.message
-        : "Se produjo un error al iniciar sesión.";
-
-    return NextResponse.json(
-      {
-        ok: false,
-        message,
-      },
-      { status: 500 }
-    );
+    console.error("Login error:", error instanceof Error ? error.message : "unknown");
+    return NextResponse.json({ ok: false, message: "No se pudo iniciar sesión." }, { status: 500 });
   }
 }

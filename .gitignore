@@ -49,3 +49,10 @@ simulador_lectucont_iec.py
 
 # datos privados de usuarios
 data/*.xlsx
+
+!.env.example
+
+# archivos sensibles y paquetes locales
+recovery-codes.txt
+*.rar
+solar-pr-real.zip
