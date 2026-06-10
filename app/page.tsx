@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { SPAIN_PROVINCES, type StationOption } from "@/app/lib/provinces";
@@ -14,13 +14,15 @@ type InstallationType =
 type StructureType = "fija" | "seguimiento_1_eje" | "seguimiento_2_ejes";
 
 type UserAccount = {
+  name: string;
+  surname: string;
   fullName: string;
   email: string;
+  password: string;
+  confirmPassword: string;
+  rgpdAccepted: boolean;
   installationType: InstallationType;
   province: string;
-  password: string;
-  company?: string;
-  phone?: string;
   peakPowerKw?: string;
 };
 
@@ -178,8 +180,8 @@ function PasswordField({
           type="button"
           className="password-icon-btn"
           onClick={onToggle}
-          aria-label={visible ? "Ocultar contraseÃ±a" : "Mostrar contraseÃ±a"}
-          title={visible ? "Ocultar contraseÃ±a" : "Mostrar contraseÃ±a"}
+          aria-label={visible ? "Ocultar contraseña" : "Mostrar contraseña"}
+          title={visible ? "Ocultar contraseña" : "Mostrar contraseña"}
         >
           {visible ? <EyeClosedIcon /> : <EyeOpenIcon />}
         </button>
@@ -255,50 +257,6 @@ function AdSlot({
       <div className="ad-description">{description}</div>
       <div className="ad-size">{size}</div>
     </div>
-  );
-}
-
-
-function WashAutoPanelAd() {
-  return (
-    <a
-      className="ad-slot tall wash-auto-panel-ad"
-      href="https://washautopanel.com/"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="Visitar la web de Wash Auto Panel"
-    >
-      <div className="ad-badge">Publicidad</div>
-
-      <div className="wash-ad-visual" aria-hidden="true">
-        <div className="wash-ad-sun" />
-        <div className="wash-ad-panels">
-          <span />
-          <span />
-          <span />
-          <span />
-          <span />
-          <span />
-        </div>
-      </div>
-
-      <div className="wash-ad-brand">WASH AUTO PANEL</div>
-      <div className="ad-title">Limpieza integral de mÃ³dulos fotovoltaicos</div>
-
-      <div className="wash-ad-benefits">
-        <span>EcolÃ³gico</span>
-        <span>Mayor rendimiento</span>
-        <span>Limpieza flexible</span>
-      </div>
-
-      <div className="wash-ad-contact">
-        <strong>Contacto</strong>
-        <span>653 903 026 Â· 628 330 622</span>
-        <span>comercial@washautopanel.com</span>
-      </div>
-
-      <div className="wash-ad-cta">Visitar web â†’</div>
-    </a>
   );
 }
 
@@ -532,126 +490,49 @@ function SolarVisualStyles() {
         min-height: 420px;
       }
 
-
-      .wash-auto-panel-ad {
-        display: block;
-        text-decoration: none;
-        color: inherit;
-        border: 1px solid rgba(14, 116, 144, 0.28);
-        background:
-          linear-gradient(180deg, rgba(239, 249, 255, 0.98), rgba(255, 255, 255, 0.97));
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-      }
-
-      .wash-auto-panel-ad:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 26px 64px rgba(15, 23, 42, 0.30);
-      }
-
-      .wash-ad-visual {
-        position: relative;
-        height: 128px;
-        margin: -4px -4px 18px;
-        overflow: hidden;
-        border-radius: 18px;
-        background:
-          linear-gradient(180deg, #bae6fd 0%, #e0f2fe 60%, #dbeafe 100%);
-      }
-
-      .wash-ad-sun {
-        position: absolute;
-        top: 16px;
-        right: 20px;
-        width: 42px;
-        height: 42px;
-        border-radius: 999px;
-        background: #facc15;
-        box-shadow: 0 0 28px rgba(250, 204, 21, 0.65);
-      }
-
-      .wash-ad-panels {
-        position: absolute;
-        left: 16px;
-        right: 16px;
-        bottom: 14px;
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 5px;
-        transform: perspective(240px) rotateX(12deg);
-      }
-
-      .wash-ad-panels span {
-        height: 34px;
-        border-radius: 4px;
-        border: 1px solid rgba(255, 255, 255, 0.68);
-        background:
-          linear-gradient(90deg, transparent 48%, rgba(255,255,255,0.35) 50%, transparent 52%),
-          linear-gradient(180deg, #075985, #0c4a6e);
-        box-shadow: inset 0 0 0 1px rgba(14, 165, 233, 0.16);
-      }
-
-      .wash-ad-brand {
-        position: relative;
-        z-index: 1;
-        margin-bottom: 8px;
-        font-size: 13px;
-        font-weight: 900;
-        letter-spacing: 0.09em;
-        color: #0369a1;
-      }
-
-      .wash-ad-benefits {
-        position: relative;
-        z-index: 1;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 7px;
-        margin: 14px 0 18px;
-      }
-
-      .wash-ad-benefits span {
-        padding: 6px 9px;
-        border-radius: 999px;
-        background: #e0f2fe;
-        color: #075985;
-        font-size: 12px;
-        font-weight: 800;
-      }
-
-      .wash-ad-contact {
-        position: relative;
-        z-index: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        padding: 13px;
-        border-radius: 14px;
-        background: rgba(255, 255, 255, 0.84);
-        border: 1px solid rgba(14, 116, 144, 0.18);
-        color: #334155;
-        font-size: 13px;
-        line-height: 1.4;
-      }
-
-      .wash-ad-contact strong {
-        color: #0f172a;
-      }
-
-      .wash-ad-cta {
-        position: relative;
-        z-index: 1;
-        display: inline-flex;
-        margin-top: 16px;
-        padding: 9px 13px;
-        border-radius: 999px;
-        background: #0369a1;
-        color: white;
-        font-size: 13px;
-        font-weight: 900;
-      }
-
       .ad-slot.compact {
         min-height: 120px;
+      }
+
+
+      .password-requirements {
+        margin: -4px 0 14px;
+        padding: 11px 13px;
+        border-radius: 14px;
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        color: #1e3a8a;
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .consent-box {
+        display: grid;
+        grid-template-columns: 20px 1fr;
+        gap: 10px;
+        margin: 14px 0;
+        padding: 14px;
+        border-radius: 16px;
+        background: #f8fafc;
+        border: 1px solid #cbd5e1;
+      }
+
+      .consent-box input {
+        width: 18px;
+        height: 18px;
+        margin-top: 3px;
+      }
+
+      .consent-box label {
+        margin: 0;
+        color: #334155;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .consent-box a {
+        color: #0369a1;
+        font-weight: 700;
       }
 
       @media (max-width: 1280px) {
@@ -704,6 +585,8 @@ function AccessScreen({
   setForgotPassword,
   signupPasswordVisible,
   setSignupPasswordVisible,
+  signupConfirmPasswordVisible,
+  setSignupConfirmPasswordVisible,
   loginPasswordVisible,
   setLoginPasswordVisible,
   onSignup,
@@ -723,6 +606,8 @@ function AccessScreen({
   setForgotPassword: (value: boolean) => void;
   signupPasswordVisible: boolean;
   setSignupPasswordVisible: (value: boolean) => void;
+  signupConfirmPasswordVisible: boolean;
+  setSignupConfirmPasswordVisible: (value: boolean) => void;
   loginPasswordVisible: boolean;
   setLoginPasswordVisible: (value: boolean) => void;
   onSignup: () => void;
@@ -739,8 +624,8 @@ function AccessScreen({
           <div className="hero-kicker">Plataforma gratuita PR fotovoltaico</div>
           <h1 className="hero-title">SolarPR Monitor</h1>
           <div className="hero-text">
-            Consulta el PR de tu instalaciÃ³n, compara tu rendimiento con la referencia
-            de tu provincia y detecta posibles pÃ©rdidas de producciÃ³n en segundos.
+            Consulta el PR de tu instalación, compara tu rendimiento con la referencia
+            de tu provincia y detecta posibles pérdidas de producción en segundos.
           </div>
         </div>
 
@@ -754,7 +639,7 @@ function AccessScreen({
                 setForgotPassword(false);
               }}
             >
-              Iniciar sesiÃ³n
+              Iniciar sesión
             </button>
 
             <button
@@ -773,11 +658,11 @@ function AccessScreen({
             <>
               <h2 className="section-title">Acceso</h2>
               <div className="section-text">
-                Introduce tus datos o solicita una nueva contraseÃ±a si no la recuerdas.
+                Introduce tus datos o solicita una nueva contraseña si no la recuerdas.
               </div>
 
               <Field
-                label="Correo electrÃ³nico"
+                label="Correo electrónico"
                 value={loginEmail}
                 onChange={setLoginEmail}
                 type="email"
@@ -785,7 +670,7 @@ function AccessScreen({
               />
 
               <PasswordField
-                label="ContraseÃ±a"
+                label="Contraseña"
                 value={loginPassword}
                 onChange={setLoginPassword}
                 visible={loginPasswordVisible}
@@ -802,7 +687,7 @@ function AccessScreen({
                   style={{ marginTop: 3 }}
                 />
                 <label htmlFor="forgot-password" style={{ fontSize: 14, color: "#334155" }}>
-                  Solicitar nueva contraseÃ±a si no recuerdo la actual.
+                  Solicitar nueva contraseña si no recuerdo la actual.
                 </label>
               </div>
 
@@ -811,7 +696,7 @@ function AccessScreen({
                 className="primary-btn"
                 onClick={forgotPassword ? onRequestPassword : onLogin}
               >
-                {forgotPassword ? "Solicitar nueva contraseÃ±a" : "Entrar"}
+                {forgotPassword ? "Solicitar nueva contraseña" : "Entrar"}
               </button>
             </>
           ) : (
@@ -822,67 +707,78 @@ function AccessScreen({
               </div>
 
               <Field
-                label="Nombre y apellidos"
-                value={signup.fullName}
-                onChange={(v) => setSignup((prev) => ({ ...prev, fullName: v }))}
+                label="Nombre"
+                value={signup.name}
+                onChange={(v) =>
+                  setSignup((prev) => ({
+                    ...prev,
+                    name: v,
+                    fullName: `${v} ${prev.surname}`.trim(),
+                  }))
+                }
               />
 
               <Field
-                label="Correo electrÃ³nico"
+                label="Apellido"
+                value={signup.surname}
+                onChange={(v) =>
+                  setSignup((prev) => ({
+                    ...prev,
+                    surname: v,
+                    fullName: `${prev.name} ${v}`.trim(),
+                  }))
+                }
+              />
+
+              <Field
+                label="Correo electrónico"
                 value={signup.email}
                 onChange={(v) => setSignup((prev) => ({ ...prev, email: v }))}
                 type="email"
                 placeholder="nombre@correo.com"
               />
 
-              <SelectField
-                label="Tipo de instalaciÃ³n"
-                value={signup.installationType}
-                onChange={(v) =>
-                  setSignup((prev) => ({
-                    ...prev,
-                    installationType: v as InstallationType,
-                  }))
-                }
-                options={INSTALLATION_OPTIONS}
-              />
-
-              <SelectField
-                label="Provincia"
-                value={signup.province}
-                onChange={(v) => setSignup((prev) => ({ ...prev, province: v }))}
-                options={SPAIN_PROVINCES.map((province) => ({
-                  value: province,
-                  label: province,
-                }))}
-              />
-
               <PasswordField
-                label="ContraseÃ±a"
+                label="Contraseña"
                 value={signup.password}
                 onChange={(v) => setSignup((prev) => ({ ...prev, password: v }))}
                 visible={signupPasswordVisible}
                 onToggle={() => setSignupPasswordVisible(!signupPasswordVisible)}
               />
 
-              <Field
-                label="TelÃ©fono (opcional)"
-                value={signup.phone ?? ""}
-                onChange={(v) => setSignup((prev) => ({ ...prev, phone: v }))}
+              <div className="password-requirements">
+                La contraseña debe tener entre 12 y 128 caracteres e incluir al menos una mayúscula,
+                una minúscula, un número y un carácter especial.
+              </div>
+
+              <PasswordField
+                label="Confirmar contraseña"
+                value={signup.confirmPassword}
+                onChange={(v) => setSignup((prev) => ({ ...prev, confirmPassword: v }))}
+                visible={signupConfirmPasswordVisible}
+                onToggle={() =>
+                  setSignupConfirmPasswordVisible(!signupConfirmPasswordVisible)
+                }
               />
 
-              <Field
-                label="Empresa (opcional)"
-                value={signup.company ?? ""}
-                onChange={(v) => setSignup((prev) => ({ ...prev, company: v }))}
-              />
-
-              <Field
-                label="Potencia pico aproximada en kWp (opcional)"
-                value={signup.peakPowerKw ?? ""}
-                onChange={(v) => setSignup((prev) => ({ ...prev, peakPowerKw: v }))}
-                type="number"
-              />
+              <div className="consent-box">
+                <input
+                  id="rgpd-consent"
+                  type="checkbox"
+                  checked={signup.rgpdAccepted}
+                  onChange={(e) =>
+                    setSignup((prev) => ({ ...prev, rgpdAccepted: e.target.checked }))
+                  }
+                />
+                <label htmlFor="rgpd-consent">
+                  He leído y acepto la{" "}
+                  <a href="/privacidad" target="_blank" rel="noopener noreferrer">
+                    Política de Privacidad
+                  </a>
+                  . Consiento el tratamiento de mis datos para crear y gestionar mi cuenta,
+                  confirmar el registro y prestar el servicio solicitado, conforme al RGPD.
+                </label>
+              </div>
 
               <button type="button" className="primary-btn" onClick={onSignup}>
                 Registrarme
@@ -897,7 +793,7 @@ function AccessScreen({
         <div className="auth-ad">
           <AdSlot
             title="Espacio publicitario superior"
-            description="Banner reservado para patrocinadores, empresas de mantenimiento, seguros solares o software energÃ©tico."
+            description="Banner reservado para patrocinadores, empresas de mantenimiento, seguros solares o software energético."
             size="970x90"
           />
         </div>
@@ -966,12 +862,12 @@ function DashboardScreen({
 
           <div className="dashboard-top">
             <div className="hero-text" style={{ maxWidth: 820 }}>
-              SesiÃ³n iniciada como <strong>{currentUser?.fullName}</strong>. Provincia principal:{" "}
+              Sesión iniciada como <strong>{currentUser?.fullName}</strong>. Provincia principal:{" "}
               <strong>{currentUser?.province}</strong>.
             </div>
 
             <button type="button" className="logout-btn" onClick={onLogout}>
-              Cerrar sesiÃ³n
+              Cerrar sesión
             </button>
           </div>
         </div>
@@ -979,7 +875,7 @@ function DashboardScreen({
         <div className="ad-row">
           <AdSlot
             title="Banner principal de patrocinador"
-            description="Espacio reservado para campaÃ±as, patrocinadores o anunciantes del sector fotovoltaico."
+            description="Espacio reservado para campañas, patrocinadores o anunciantes del sector fotovoltaico."
             size="970x90"
           />
         </div>
@@ -987,15 +883,15 @@ function DashboardScreen({
         <div className="dashboard-grid">
           <div className="card">
             <h2 className="section-title" style={{ fontSize: 26 }}>
-              ConfiguraciÃ³n de consulta
+              Configuración de consulta
             </h2>
 
             <div className="section-text">
-              Elige provincia, estaciÃ³n y estructura para preparar la consulta del PR.
+              Elige provincia, estación y estructura para preparar la consulta del PR.
             </div>
 
             <Field
-              label="Nombre de la instalaciÃ³n"
+              label="Nombre de la instalación"
               value={plantForm.plantName}
               onChange={(v) => setPlantForm((prev) => ({ ...prev, plantName: v }))}
             />
@@ -1011,7 +907,7 @@ function DashboardScreen({
             />
 
             <SelectField
-              label="EstaciÃ³n meteorolÃ³gica"
+              label="Estación meteorológica"
               value={selectedStation?.id || plantForm.stationId}
               onChange={(v) => setPlantForm((prev) => ({ ...prev, stationId: v }))}
               disabled={stationsLoading || stations.length === 0}
@@ -1050,19 +946,19 @@ function DashboardScreen({
 
             <div className="station-box">
               <div style={{ fontWeight: 700, marginBottom: 6 }}>
-                Referencia meteorolÃ³gica seleccionada
+                Referencia meteorológica seleccionada
               </div>
 
               {selectedStation ? (
                 <div style={{ color: "#475569", fontSize: 14 }}>
-                  {plantForm.province} Â· {selectedStation.name} Â· PR medio provincial de referencia{" "}
+                  {plantForm.province} · {selectedStation.name} · PR medio provincial de referencia{" "}
                   {selectedStation.zoneAvgPR}%
                 </div>
               ) : (
                 <div style={{ color: "#475569", fontSize: 14 }}>
                   {stationsLoading
                     ? "Cargando estaciones para la provincia seleccionada."
-                    : "AÃºn no hay estaciones cargadas para la provincia seleccionada."}
+                    : "Aún no hay estaciones cargadas para la provincia seleccionada."}
                 </div>
               )}
             </div>
@@ -1089,7 +985,7 @@ function DashboardScreen({
               <div>
                 {dataSource.mode === "api"
                   ? "Consulta conectada a la API protegida de SIAR/MAPA."
-                  : "Modo preproducciÃ³n: estaciones de respaldo mientras se habilita el token API SIAR."}
+                  : "Modo preproducción: estaciones de respaldo mientras se habilita el token API SIAR."}
               </div>
             </div>
 
@@ -1111,31 +1007,31 @@ function DashboardScreen({
 
           <div className="main-results">
             <div className="stat-grid">
-              <StatCard title="PR del dÃ­a" value={`${pr}%`} subtitle={`Estado: ${stateLabel}`} />
-              <StatCard title="PR medio 7 dÃ­as" value={`${avg7}%`} subtitle="Seguimiento semanal" />
-              <StatCard title="PR medio mensual" value={`${monthlyAvg}%`} subtitle="VisiÃ³n de tendencia" />
+              <StatCard title="PR del día" value={`${pr}%`} subtitle={`Estado: ${stateLabel}`} />
+              <StatCard title="PR medio 7 días" value={`${avg7}%`} subtitle="Seguimiento semanal" />
+              <StatCard title="PR medio mensual" value={`${monthlyAvg}%`} subtitle="Visión de tendencia" />
               <StatCard
-                title="PÃ©rdida estimada"
-                value={estimatedLoss > 0 ? `${estimatedLoss} â‚¬/mes` : "0 â‚¬/mes"}
-                subtitle="EstimaciÃ³n de impacto econÃ³mico"
+                title="Pérdida estimada"
+                value={estimatedLoss > 0 ? `${estimatedLoss} €/mes` : "0 €/mes"}
+                subtitle="Estimación de impacto económico"
               />
             </div>
 
             <div className="stat-grid">
               <StatCard title="Benchmark provincia" value={`${zoneAvgPR}%`} subtitle={benchmarkText} />
               <StatCard title="Percentil mercado" value="93" subtitle="Comparativa con instalaciones similares" />
-              <StatCard title="Inversores crÃ­ticos" value={`${criticalInverters}`} subtitle="Equipos por debajo del umbral" />
+              <StatCard title="Inversores críticos" value={`${criticalInverters}`} subtitle="Equipos por debajo del umbral" />
               <StatCard title="Calidad del dato" value="98%" subtitle="Serie casi completa" />
             </div>
 
             <div className="two-col">
               <div className="card">
                 <h2 className="section-title" style={{ fontSize: 26 }}>
-                  ProducciÃ³n real vs esperada
+                  Producción real vs esperada
                 </h2>
 
                 <div className="section-text">
-                  Resumen horario de ejemplo para la instalaciÃ³n.
+                  Resumen horario de ejemplo para la instalación.
                 </div>
 
                 {mockHourly.map((item) => {
@@ -1155,7 +1051,7 @@ function DashboardScreen({
                       >
                         <span style={{ fontWeight: 600 }}>{item.time}</span>
                         <span style={{ color: "#64748b" }}>
-                          PR {item.pr}% Â· pÃ©rdida {loss > 0 ? loss : 0} kWh
+                          PR {item.pr}% · pérdida {loss > 0 ? loss : 0} kWh
                         </span>
                       </div>
 
@@ -1175,11 +1071,11 @@ function DashboardScreen({
 
               <div className="card">
                 <h2 className="section-title" style={{ fontSize: 26 }}>
-                  DiagnÃ³stico automÃ¡tico
+                  Diagnóstico automático
                 </h2>
 
                 <div className="section-text">
-                  Lectura rÃ¡pida del estado del activo.
+                  Lectura rápida del estado del activo.
                 </div>
 
                 <div
@@ -1192,7 +1088,7 @@ function DashboardScreen({
                   }}
                 >
                   <div style={{ fontWeight: 700, color: "#92400e", marginBottom: 6 }}>
-                    DiagnÃ³stico principal
+                    Diagnóstico principal
                   </div>
                   <div style={{ fontSize: 14, color: "#92400e" }}>{diagnosis}</div>
                 </div>
@@ -1207,7 +1103,7 @@ function DashboardScreen({
                   }}
                 >
                   <div style={{ fontWeight: 700, color: "#1d4ed8", marginBottom: 6 }}>
-                    ComparaciÃ³n con la provincia
+                    Comparación con la provincia
                   </div>
                   <div style={{ fontSize: 14, color: "#1d4ed8" }}>{benchmarkText}</div>
                 </div>
@@ -1229,7 +1125,7 @@ function DashboardScreen({
                       marginBottom: 10,
                     }}
                   >
-                    <span style={{ color: "#475569" }}>Ãndice de confianza del cÃ¡lculo</span>
+                    <span style={{ color: "#475569" }}>Índice de confianza del cálculo</span>
                     <span style={{ fontWeight: 700 }}>82%</span>
                   </div>
 
@@ -1263,7 +1159,7 @@ function DashboardScreen({
                   >
                     <div style={{ fontWeight: 700, marginBottom: 6 }}>Servicio recomendado</div>
                     <div style={{ fontSize: 14, lineHeight: 1.5 }}>
-                      Tu instalaciÃ³n podrÃ­a beneficiarse de una revisiÃ³n tÃ©cnica o servicio
+                      Tu instalación podría beneficiarse de una revisión técnica o servicio
                       de mantenimiento.
                     </div>
                     <button
@@ -1279,7 +1175,7 @@ function DashboardScreen({
                         cursor: "pointer",
                       }}
                     >
-                      Solicitar diagnÃ³stico gratuito
+                      Solicitar diagnóstico gratuito
                     </button>
                   </div>
                 ) : null}
@@ -1329,11 +1225,11 @@ function DashboardScreen({
 
               <div className="card">
                 <h2 className="section-title" style={{ fontSize: 26 }}>
-                  Alertas y anomalÃ­as
+                  Alertas y anomalías
                 </h2>
 
                 <div className="section-text">
-                  DetecciÃ³n de pÃ©rdidas en franjas concretas del dÃ­a.
+                  Detección de pérdidas en franjas concretas del día.
                 </div>
 
                 {mockHourly
@@ -1341,10 +1237,10 @@ function DashboardScreen({
                   .map((item) => (
                     <div key={item.time} className="alert-card">
                       <div style={{ fontWeight: 700, color: "#991b1b" }}>
-                        {item.time} Â· PR {item.pr}%
+                        {item.time} · PR {item.pr}%
                       </div>
                       <div style={{ fontSize: 14, color: "#7f1d1d", marginTop: 4 }}>
-                        Posible desviaciÃ³n respecto al comportamiento esperado.
+                        Posible desviación respecto al comportamiento esperado.
                       </div>
                     </div>
                   ))}
@@ -1353,7 +1249,7 @@ function DashboardScreen({
 
             <div className="card">
               <h2 className="section-title" style={{ fontSize: 26 }}>
-                EvoluciÃ³n diaria del PR
+                Evolución diaria del PR
               </h2>
 
               <div className="section-text">
@@ -1385,7 +1281,14 @@ function DashboardScreen({
               size="300x250"
             />
 
-            <WashAutoPanelAd />
+            <div className="ad-slot tall">
+              <div className="ad-badge">Publicidad</div>
+              <div className="ad-title">Servicios O&M</div>
+              <div className="ad-description">
+                Zona ideal para empresas de mantenimiento, limpieza de módulos, inspecciones termográficas o monitorización.
+              </div>
+              <div className="ad-size">300x600</div>
+            </div>
 
             <AdSlot
               title="Software / SCADA / BESS"
@@ -1398,7 +1301,7 @@ function DashboardScreen({
         <div className="ad-row" style={{ marginTop: 24 }}>
           <AdSlot
             title="Patrocinador del mes"
-            description="Espacio inferior para campaÃ±as, colaboraciones comerciales o patrocinadores del proyecto."
+            description="Espacio inferior para campañas, colaboraciones comerciales o patrocinadores del proyecto."
             size="970x250"
           />
         </div>
@@ -1415,6 +1318,7 @@ export default function Home() {
   const [notice, setNotice] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   const [signupPasswordVisible, setSignupPasswordVisible] = useState(false);
+  const [signupConfirmPasswordVisible, setSignupConfirmPasswordVisible] = useState(false);
   const [loginPasswordVisible, setLoginPasswordVisible] = useState(false);
   const [forgotPassword, setForgotPassword] = useState(false);
 
@@ -1428,13 +1332,15 @@ export default function Home() {
   });
 
   const [signup, setSignup] = useState<UserAccount>({
+    name: "",
+    surname: "",
     fullName: "",
     email: "",
+    password: "",
+    confirmPassword: "",
+    rgpdAccepted: false,
     installationType: "autoconsumo_residencial",
     province: "Madrid",
-    password: "",
-    company: "",
-    phone: "",
     peakPowerKw: "",
   });
 
@@ -1442,7 +1348,7 @@ export default function Home() {
   const [loginPassword, setLoginPassword] = useState("");
 
   const [plantForm, setPlantForm] = useState<PlantForm>({
-    plantName: "Mi instalaciÃ³n FV",
+    plantName: "Mi instalación FV",
     province: "Madrid",
     stationId: "",
     peakPower: "100",
@@ -1472,8 +1378,8 @@ export default function Home() {
 
   const benchmarkText =
     zoneGap >= 0
-      ? `Tu instalaciÃ³n estÃ¡ ${zoneGap}% por encima de la referencia media de tu zona.`
-      : `Tu instalaciÃ³n estÃ¡ ${Math.abs(zoneGap)}% por debajo de la referencia media de tu zona.`;
+      ? `Tu instalación está ${zoneGap}% por encima de la referencia media de tu zona.`
+      : `Tu instalación está ${Math.abs(zoneGap)}% por debajo de la referencia media de tu zona.`;
 
   const diagnosis = useMemo(() => {
     if (pr < 82) {
@@ -1485,13 +1391,13 @@ export default function Home() {
         (item) => ["12:00", "13:00", "14:00"].includes(item.time) && item.pr < 88
       )
     ) {
-      return "Se detecta caÃ­da en horas centrales. Posible clipping, suciedad o limitaciÃ³n parcial.";
+      return "Se detecta caída en horas centrales. Posible clipping, suciedad o limitación parcial.";
     }
 
-    return "No se detectan anomalÃ­as severas. Recomendable seguir monitorizando el activo.";
+    return "No se detectan anomalías severas. Recomendable seguir monitorizando el activo.";
   }, [pr]);
 
-  const stateLabel = pr >= 90 ? "Ã“ptimo" : pr >= 85 ? "Vigilancia" : "Revisar";
+  const stateLabel = pr >= 90 ? "Óptimo" : pr >= 85 ? "Vigilancia" : "Revisar";
   const stateColor = pr >= 90 ? "#166534" : pr >= 85 ? "#92400e" : "#991b1b";
   const stateBg = pr >= 90 ? "#dcfce7" : pr >= 85 ? "#fef3c7" : "#fee2e2";
   const canOfferService = pr < 85;
@@ -1540,7 +1446,7 @@ export default function Home() {
       setStations([]);
       setDataSource({
         mode: "unknown",
-        source: "Error de conexiÃ³n",
+        source: "Error de conexión",
         note: "No se pudo conectar con la fuente de estaciones.",
       });
     } finally {
@@ -1564,13 +1470,55 @@ export default function Home() {
   const handleSignup = async () => {
     setNotice(null);
 
+    const name = signup.name.trim();
+    const surname = signup.surname.trim();
+    const email = signup.email.trim();
+    const securePassword =
+      signup.password.length >= 12 &&
+      signup.password.length <= 128 &&
+      /[a-z]/.test(signup.password) &&
+      /[A-Z]/.test(signup.password) &&
+      /\d/.test(signup.password) &&
+      /[^A-Za-z0-9]/.test(signup.password);
+
+    if (!name || !surname || !email) {
+      setNotice({ type: "error", text: "Completa nombre, apellido y correo electrónico." });
+      return;
+    }
+
+    if (!securePassword) {
+      setNotice({
+        type: "error",
+        text: "La contraseña debe tener entre 12 y 128 caracteres e incluir mayúscula, minúscula, número y carácter especial.",
+      });
+      return;
+    }
+
+    if (signup.password !== signup.confirmPassword) {
+      setNotice({ type: "error", text: "Las contraseñas no coinciden." });
+      return;
+    }
+
+    if (!signup.rgpdAccepted) {
+      setNotice({
+        type: "error",
+        text: "Debes aceptar la Política de Privacidad para crear la cuenta.",
+      });
+      return;
+    }
+
     try {
-      const response = await fetch("/api/register", {
+      const response = await fetch("/api/register-user", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(signup),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          surname,
+          email,
+          password: signup.password,
+          rgpdAccepted: true,
+          privacyVersion: "2026-06-09",
+        }),
       });
 
       const data = await response.json();
@@ -1583,26 +1531,30 @@ export default function Home() {
         return;
       }
 
-      const newUser = data.user as UserAccount;
-      setCurrentUser(newUser);
-      await loadStations(newUser.province);
-
-      setPlantForm((prev) => ({
-        ...prev,
-        province: newUser.province,
-        peakPower: newUser.peakPowerKw || prev.peakPower,
-      }));
-
       setNotice({
         type: "success",
-        text: "Usuario registrado correctamente y guardado en el Excel.",
+        text:
+          data.message ||
+          "Registro completado. Revisa tu correo para confirmar la cuenta antes de iniciar sesión.",
       });
 
-      setScreen("dashboard");
+      setLoginEmail(email);
+      setLoginPassword("");
+      setSignup((prev) => ({
+        ...prev,
+        name: "",
+        surname: "",
+        fullName: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        rgpdAccepted: false,
+      }));
+      setAuthMode("login");
     } catch {
       setNotice({
         type: "error",
-        text: "Error de conexiÃ³n al registrar el usuario.",
+        text: "Error de conexión al registrar el usuario.",
       });
     }
   };
@@ -1627,7 +1579,7 @@ export default function Home() {
       if (!response.ok || !data.ok) {
         setNotice({
           type: "error",
-          text: data.message || "No se pudo iniciar sesiÃ³n.",
+          text: data.message || "No se pudo iniciar sesión.",
         });
         return;
       }
@@ -1646,7 +1598,7 @@ export default function Home() {
     } catch {
       setNotice({
         type: "error",
-        text: "Error de conexiÃ³n al iniciar sesiÃ³n.",
+        text: "Error de conexión al iniciar sesión.",
       });
     }
   };
@@ -1655,7 +1607,7 @@ export default function Home() {
     setNotice(null);
 
     try {
-      const response = await fetch("/api/request-password-reset-reset", {
+      const response = await fetch("/api/request-password-reset", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -1677,7 +1629,7 @@ export default function Home() {
 
       setNotice({
         type: "success",
-        text: "Solicitud registrada correctamente en el Excel de nuevas contraseÃ±as.",
+        text: "Solicitud registrada correctamente en el Excel de nuevas contraseñas.",
       });
 
       setForgotPassword(false);
@@ -1685,7 +1637,7 @@ export default function Home() {
     } catch {
       setNotice({
         type: "error",
-        text: "Error de conexiÃ³n al solicitar una nueva contraseÃ±a.",
+        text: "Error de conexión al solicitar una nueva contraseña.",
       });
     }
   };
@@ -1716,6 +1668,8 @@ export default function Home() {
         setForgotPassword={setForgotPassword}
         signupPasswordVisible={signupPasswordVisible}
         setSignupPasswordVisible={setSignupPasswordVisible}
+        signupConfirmPasswordVisible={signupConfirmPasswordVisible}
+        setSignupConfirmPasswordVisible={setSignupConfirmPasswordVisible}
         loginPasswordVisible={loginPasswordVisible}
         setLoginPasswordVisible={setLoginPasswordVisible}
         onSignup={handleSignup}
@@ -1754,4 +1708,3 @@ export default function Home() {
     />
   );
 }
-
