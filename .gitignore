@@ -56,3 +56,4 @@ data/*.xlsx
 recovery-codes.txt
 *.rar
 solar-pr-real.zip
+.vercel
