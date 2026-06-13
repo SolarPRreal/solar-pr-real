@@ -1,64 +1,90 @@
+import { createHash } from "node:crypto";
 import { NextResponse } from "next/server";
-import {
-  SESSION_COOKIE,
-  callWebhook,
-  createSessionToken,
-  getClientIp,
-  hashPassword,
-  isSameOrigin,
-  isValidEmail,
-  normalizeEmail,
-  parseJson,
-  rateLimit,
-  sessionMaxAge,
-} from "@/app/lib/security";
 
 export const runtime = "nodejs";
 
-type LoginBody = { email?: string; password?: string };
+type LoginPayload = {
+  email?: string;
+  password?: string;
+};
+
+function isValidEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function hashPassword(password: string) {
+  const pepper = process.env.PASSWORD_PEPPER || "";
+  return createHash("sha256").update(`${pepper}:${password}`).digest("hex");
+}
 
 export async function POST(request: Request) {
   try {
-    if (!isSameOrigin(request)) return NextResponse.json({ ok: false, message: "Solicitud no permitida." }, { status: 403 });
-    const ip = getClientIp(request);
-    const limited = rateLimit(`login:${ip}`, 8, 15 * 60_000);
-    if (!limited.allowed) return NextResponse.json({ ok: false, message: "Demasiados intentos. Inténtalo más tarde." }, { status: 429, headers: { "Retry-After": String(limited.retryAfter) } });
+    const body = (await request.json()) as LoginPayload;
 
-    const body = await parseJson<LoginBody>(request);
-    const email = normalizeEmail(body.email);
-    const password = String(body.password ?? "");
-    if (!isValidEmail(email) || !password || password.length > 128) {
-      return NextResponse.json({ ok: false, message: "Correo o contraseña incorrectos." }, { status: 401 });
+    const email = body.email?.trim().toLowerCase() || "";
+    const password = body.password || "";
+
+    if (!email || !isValidEmail(email) || !password) {
+      return NextResponse.json(
+        { ok: false, message: "Introduce un mail válido y la contraseña." },
+        { status: 400 }
+      );
     }
 
-    const { response, data } = await callWebhook({ action: "login", email, passwordHash: hashPassword(password) });
-    if (!response.ok || data.ok !== true) {
-      return NextResponse.json({ ok: false, message: "Correo o contraseña incorrectos." }, { status: 401 });
+    const webhookUrl = process.env.GOOGLE_SHEETS_WEBHOOK_URL;
+
+    if (!webhookUrl) {
+      return NextResponse.json(
+        {
+          ok: false,
+          message:
+            "Falta configurar GOOGLE_SHEETS_WEBHOOK_URL. El login en producción se valida contra Google Sheets.",
+        },
+        { status: 500 }
+      );
     }
 
-    const rawUser = (data.user || {}) as Record<string, unknown>;
-    const user = {
-      name: String(rawUser.name ?? "").slice(0, 80),
-      surname: String(rawUser.surname ?? "").slice(0, 120),
-      email,
-      plantName: String(rawUser.plantName ?? "Instalación FV").slice(0, 120),
-      autonomousCommunity: String(rawUser.autonomousCommunity ?? "Comunidad de Madrid").slice(0, 80),
-      province: String(rawUser.province ?? "Madrid").slice(0, 80),
-      siarStationId: String(rawUser.siarStationId ?? "").slice(0, 30),
-      peakPower: String(rawUser.peakPower ?? "100").slice(0, 20),
-    };
-
-    const result = NextResponse.json({ ok: true, user });
-    result.cookies.set(SESSION_COOKIE, createSessionToken({ email, name: user.name, surname: user.surname }), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: sessionMaxAge,
+    const response = await fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "loginUser",
+        token: process.env.API_SECRET || "",
+        email,
+        passwordHash: hashPassword(password),
+      }),
     });
-    return result;
+
+    const text = await response.text();
+    let data: any = {};
+
+    try {
+      data = JSON.parse(text);
+    } catch {
+      data = { ok: false, message: text.slice(0, 300) };
+    }
+
+    if (!response.ok || !data.ok) {
+      return NextResponse.json(
+        {
+          ok: false,
+          message: data.message || "Correo o contraseña incorrectos.",
+        },
+        { status: 401 }
+      );
+    }
+
+    return NextResponse.json({
+      ok: true,
+      message: "Login correcto.",
+      user: data.user || null,
+    });
   } catch (error) {
-    console.error("Login error:", error instanceof Error ? error.message : "unknown");
-    return NextResponse.json({ ok: false, message: "No se pudo iniciar sesión." }, { status: 500 });
+    console.error("Error en login:", error);
+
+    return NextResponse.json(
+      { ok: false, message: "Error interno al iniciar sesión." },
+      { status: 500 }
+    );
   }
 }
